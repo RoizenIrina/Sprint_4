@@ -14,9 +14,9 @@ import static org.openqa.selenium.By.xpath;
 
 public class OrderScooterMainPage {
 
+    private final WebDriver driver;
+    private final static String page = "https://qa-scooter.praktikum-services.ru/";
 
-    private final By headerOrderButton = cssSelector("div.Header_Nav__AGCXC > button.Button_Button__ra12g"); //кнопка "Заказать" вверху страницы
-    private final By footerOrderButton = cssSelector("div.Home_RoadMap__2tal_ > div.Home_FinishButton__1_cWm > button"); //кнопка "Заказать" внизу страницы
     private final By userName = xpath("//div[@class='Order_Form__17u6u']/div[1]/input"); //поле ввода имени
     private final By userSurname = xpath("//div[@class='Order_Form__17u6u']/div[2]/input"); //поле ввода фамилии
     private final By userAddress = xpath("//div[@class='Order_Form__17u6u']/div[3]/input"); //поле ввода адреса
@@ -33,36 +33,23 @@ public class OrderScooterMainPage {
     private final By confirmButton = xpath("//div[@class='Order_Modal__YZ-d3']/div[2]/button[2]"); //кнопка "Да"
     private final By orderCreated = xpath("//*[contains(text(), 'Заказ оформлен')]"); //Заказ оформлен
 
-    private final WebDriver driver;
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy"); // готовим нужный форматтер
+      DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy"); // готовим нужный форматтер
     String date = LocalDate.now().plusDays(3).format(formatter); // получаем текущую дату, прибавляем к ней 3 дня и форматируем
 
     public OrderScooterMainPage(WebDriver driver) {
         this.driver = driver;
     }
 
-
-
-    public void clickHeaderOrderButton() {
-        driver.findElement(headerOrderButton).click();
+    public void open (){
+        driver.get(page);
     }
-
-    public void checkFooterOrderButtonClickable() {
-        new WebDriverWait(driver, Duration.ofSeconds(5)).until(ExpectedConditions.elementToBeClickable(footerOrderButton));
-    }
-
-    public void scrollToFooterOrderButton() {
-        new WebDriverWait(driver, Duration.ofSeconds(5)).until(ExpectedConditions.visibilityOfElementLocated(footerOrderButton));
-        // Поиск элемента с кнопкой заказа из секции с road_map и скролл до нее
-
-        Object elementOrderButton = driver.findElement(footerOrderButton);
+    public void findCheckAndClickOrderButton(By buttonAddress) {
+        new WebDriverWait(driver, Duration.ofSeconds(5)).until(ExpectedConditions.visibilityOfElementLocated(buttonAddress));
+            Object elementOrderButton = driver.findElement(buttonAddress);
         ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView();", elementOrderButton);
+        new WebDriverWait(driver, Duration.ofSeconds(5)).until(ExpectedConditions.elementToBeClickable(buttonAddress));
+        driver.findElement(buttonAddress).click();
     }
-
-    public void clickFooterOrderButton() {
-        driver.findElement(footerOrderButton).click();
-    }
-
     public void userName(String name){
         driver.findElement(userName).sendKeys(name);
     }
